@@ -6,7 +6,7 @@ const addTaskBtn = document.getElementById("add-task-btn");
 const tasks = document.getElementById("tasks");
 
 // Load tasks from localStorage
-const localStorageTasks = JSON.parse(localStorage.getItem("tasks")) || []; // Fallback to empty array if no tasks are in localStorage
+const localStorageTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 // Add event listener to form
 form.addEventListener("submit", (e) => {
@@ -69,15 +69,15 @@ function addTask() {
 // Add event listener to tasks for delete button
 tasks.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete-btn")) {
-    const taskEl = e.target.parentElement.parentElement; // Get the task element to remove it
+    const taskEl = e.target.parentElement.parentElement;
     taskEl.remove();
 
     // Get task text to remove it from localStorage
     const taskText = e.target.previousElementSibling.textContent;
     const index = localStorageTasks.indexOf(taskText);
     if (index > -1) {
-      localStorageTasks.splice(index, 1); // Remove the task from localStorage array
-      localStorage.setItem("tasks", JSON.stringify(localStorageTasks)); // Update localStorage
+      localStorageTasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(localStorageTasks));
     }
   }
 });
