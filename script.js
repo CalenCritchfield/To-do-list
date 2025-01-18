@@ -1,130 +1,65 @@
-// Define variables
-const container = document.getElementById("container");
-const form = document.getElementById("form");
-const input = document.getElementById("input");
-const addTaskBtn = document.getElementById("add-task-btn");
-const tasks = document.getElementById("tasks");
+document.addEventListener("DOMContentLoaded", loadTasks);
 
-// Load tasks from localStorage
-const localStorageTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+const addTaskButton = document.getElementById("add-task-btn");
+const taskInput = document.getElementById("task-input");
+const taskList = document.getElementById("task-list");
 
-// Add event listener to form
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  addTask();
-});
+addTaskButton.addEventListener("click", addTask);
 
-// Add task function
 function addTask() {
-  const task = input.value;
-  if (task) {
-    const taskEl = document.createElement("div");
-    taskEl.classList.add("task");
-    taskEl.innerHTML = `
-    <div class="listContainer">
-      <p>${task}</p>
-      <button class="delete-btn">Delete</button>
-    </div>
-    `;
+  const taskText = taskInput.value.trim();
 
-    const deleteBtn = taskEl.querySelector(".delete-btn");
-    const p = taskEl.querySelector("p");
-    const listContainer = taskEl.querySelector(".listContainer");
-
-    // Styling
-    if (listContainer) {
-      listContainer.style.display = "flex";
-      listContainer.style.justifyContent = "space-between";
-      listContainer.style.alignItems = "center";
-      listContainer.style.padding = "20px";
-      listContainer.style.margin = "10px 0";
-      listContainer.style.borderRadius = "5px";
-    }
-
-    if (deleteBtn) {
-      deleteBtn.style.fontSize = "12px";
-      deleteBtn.style.width = "70px";
-      deleteBtn.style.padding = "10px";
-      deleteBtn.style.border = "none";
-      deleteBtn.style.backgroundColor = "red";
-      deleteBtn.style.color = "white";
-      deleteBtn.style.alignItems = "center";
-    }
-
-    if (p) {
-      p.style.fontSize = "20px";
-      p.style.fontWeight = "bold";
-      p.style.color = "white";
-    }
-
-    tasks.appendChild(taskEl);
-    input.value = "";
-
-    // Add task to localStorage and update the list
-    localStorageTasks.push(task);
-    localStorage.setItem("tasks", JSON.stringify(localStorageTasks));
+  if (taskText === "") {
+    alert("Please enter a task!");
+    return;
   }
+
+  const taskItem = document.createElement("li");
+  taskItem.innerHTML = `
+<input type="checkbox" class="task-checkbox">
+<span>${taskText}</span>
+<button class="delete-btn">Delete</button>
+`;
+
+  taskList.appendChild(taskItem);
+  saveTasks();
+  taskInput.value = "";
 }
 
-// Add event listener to tasks for delete button
-tasks.addEventListener("click", (e) => {
+taskList.addEventListener("click", function (e) {
   if (e.target.classList.contains("delete-btn")) {
-    const taskEl = e.target.parentElement.parentElement;
-    taskEl.remove();
-
-    // Get task text to remove it from localStorage
-    const taskText = e.target.previousElementSibling.textContent;
-    const index = localStorageTasks.indexOf(taskText);
-    if (index > -1) {
-      localStorageTasks.splice(index, 1);
-      localStorage.setItem("tasks", JSON.stringify(localStorageTasks));
-    }
+    e.target.parentElement.remove();
+    saveTasks();
+  } else if (e.target.classList.contains("task-checkbox")) {
+    e.target.nextElementSibling.classList.toggle("completed");
+    saveTasks();
   }
 });
 
-// Load tasks from localStorage when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-  if (localStorageTasks.length > 0) {
-    localStorageTasks.forEach((task) => {
-      const taskEl = document.createElement("div");
-      taskEl.classList.add("task");
-      taskEl.innerHTML = `
-          <div class="listContainer">
-          <p>${task}</p>
-          <button class="delete-btn">Delete</button>
-          </div>
-      `;
-      const deleteBtn = taskEl.querySelector(".delete-btn");
-      const p = taskEl.querySelector("p");
-      const listContainer = taskEl.querySelector(".listContainer");
+function saveTasks() {
+  const tasks = [];
+  taskList.querySelectorAll("li").forEach((taskItem) => {
+    tasks.push({
+      text: taskItem.querySelector("span").textContent,
+      completed: taskItem.querySelector(".task-checkbox").checked,
+    });
+  });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
-      // Styling
-      if (listContainer) {
-        listContainer.style.display = "flex";
-        listContainer.style.justifyContent = "space-between";
-        listContainer.style.alignItems = "center";
-        listContainer.style.padding = "20px";
-        listContainer.style.margin = "10px 0";
-        listContainer.style.borderRadius = "5px";
-      }
-
-      if (deleteBtn) {
-        deleteBtn.style.fontSize = "12px";
-        deleteBtn.style.width = "70px";
-        deleteBtn.style.padding = "10px";
-        deleteBtn.style.border = "none";
-        deleteBtn.style.backgroundColor = "red";
-        deleteBtn.style.color = "white";
-        deleteBtn.style.alignItems = "center";
-      }
-
-      if (p) {
-        p.style.fontSize = "20px";
-        p.style.fontWeight = "bold";
-        p.style.color = "white";
-      }
-
-      tasks.appendChild(taskEl);
+function loadTasks() {
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+  if (tasks) {
+    tasks.forEach((task) => {
+      const taskItem = document.createElement("li");
+      taskItem.innerHTML = `
+  <input type="checkbox" class="task-checkbox" ${
+    task.completed ? "checked" : ""
+  }>
+  <span class="${task.completed ? "completed" : ""}">${task.text}</span>
+  <button class="delete-btn">Delete</button>
+  `;
+      taskList.appendChild(taskItem);
     });
   }
-});
+}

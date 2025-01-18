@@ -3,17 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To Do List</title>
+    <title>Shopping List</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/x-icon" href="/images/shopping.png" />
   </head>
   <body>
-    <div id="container" class="container">
-      <h1>To Do List</h1>
-      <form id="form">
-        <input type="text" id="input" placeholder="Enter a task" />
-        <button id="add-task-btn" type="submit">Add Task</button>
-      </form>
-      <ul id="tasks"></ul>
+    <div class="container">
+      <h1>Shopping List</h1>
+      <div class="input-container">
+        <input type="text" id="task-input" placeholder="Add a new task" />
+        <button id="add-task-btn">Add</button>
+      </div>
+      <ul id="task-list"></ul>
     </div>
     <script src="script.js"></script>
   </body>
