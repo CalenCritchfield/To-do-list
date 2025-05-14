@@ -3,9 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add these meta tags for PWA support -->
+    <meta name="theme-color" content="#4CAF50" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <title>Shopping List</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" type="image/x-icon" href="/images/shopping.png" />
+    <!-- Icon for home screen (using emoji as fallback) -->
+    <link rel="icon" href="icons/favicon.ico" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.webmanifest" />
   </head>
   <body>
     <div class="container">
@@ -17,5 +28,21 @@
       <ul id="task-list"></ul>
     </div>
     <script src="script.js"></script>
+    <!-- Add this script for PWA functionality -->
+    <script>
+      // Register Service Worker
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("sw.js")
+            .then((registration) => {
+              console.log("Service Worker registered");
+            })
+            .catch((err) => {
+              console.log("Service Worker registration failed: ", err);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
